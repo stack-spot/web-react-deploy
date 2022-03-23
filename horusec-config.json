@@ -1,0 +1,6 @@
+{
+    "horusecCliFilesOrPathsToIgnore": [
+      "**/deploy.sh",
+      "**/deploy.bat"
+    ]
+  }

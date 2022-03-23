@@ -1,0 +1,128 @@
+name: "{{project_name}}-release"
+on:
+  push:
+    tags: "*-v*"
+
+jobs:
+{% raw %}
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package.json') }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+  security:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    container:
+      image: horuszup/horusec-cli:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Horusec Security
+        run: horusec start -e -p .
+  build:
+    runs-on: ubuntu-latest
+    needs: [tests, security]
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package.json') }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run build
+        run: yarn build
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/dist"
+          key: ${{ github.sha }}-dev-dist
+{% endraw %}
+  get-release-infos:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ '{{' }} steps.release-infos.outputs.stage }}
+      image_tag: ${{ '{{' }} steps.release-infos.outputs.image_tag }}
+    steps:
+      - name: Get release infos from release tag
+        id: release-infos
+        run: |
+          STAGE="$(echo '${{ '{{' }} github.ref }}' | sed 's/refs\/tags\///' | sed 's/-v.*//')"
+          IMAGE_TAG="$(echo '${{ '{{' }} github.ref }}' | sed 's/refs\/tags\///' | sed 's/.*-v//')"
+          echo "::set-output name=stage::$STAGE"
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+  get-and-validate-stage-infos:
+    runs-on: ubuntu-latest
+    outputs:
+      stage_aws_region: ${{ '{{' }} steps.get-stage-infos.outputs.stage_aws_region }}
+    defaults:
+      run:
+        working-directory: stages
+    needs: [get-release-infos]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate stage from release info
+        id: validate-stage-infos
+        run: (test -f ${{ '{{' }} needs.get-release-infos.outputs.stage }}.json && echo ${{ '{{' }} needs.get-release-infos.outputs.stage }}.json exists) || (echo File ${{ '{{' }} needs.get-release-infos.outputs.stage }}.json does not exist, skipping step, and abort release && exit 1)
+      - name: Get Stage info
+        id: get-stage-infos
+        run: |
+          REGION="$(jq -r .cloud.account.region ${{ '{{' }} needs.get-release-infos.outputs.stage }}.json)"
+          echo "::set-output name=stage_aws_region::$REGION"
+  deploy-s3:
+    runs-on: ubuntu-latest
+    needs: [get-and-validate-stage-infos, build]
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: "**/dist"
+          key: ${{ '{{' }} github.sha }}-dev-dist
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ '{{' }} needs.get-and-validate-stage-infos.outputs.stage_aws_region }}
+          role-to-assume: ${{ '{{' }} secrets.PIPELINE_RELEASE_ROLE }}
+      - name: Copy files to the s3 website content bucket
+        run: aws s3 sync dist "s3://$(aws s3 ls | grep {{project_name|to_camel|lower}}stack-{{project_name|to_camel|lower}}mainbucket | awk '{print $NF}')" --delete

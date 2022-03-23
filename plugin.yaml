@@ -1,0 +1,18 @@
+name: web-react-deploy
+description: Plugin de ambiente para stack react web
+types:
+  - app
+lifecycle:
+  deploy:
+    supported-os:
+      - windows
+      - linux
+      - mac
+    requirements-check:
+      npm:
+        check-command: npm --version
+        info: npm is not installed
+    deploy-command:
+      windows: cmd /c infra\deploy.bat ${stage}
+      linux: sh ./infra/deploy.sh ${stage}
+      mac: sh ./infra/deploy.sh ${stage}
