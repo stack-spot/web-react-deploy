@@ -1,4 +1,4 @@
-name: web-react-deploy
+name: deploy-aws
 description: Plugin de ambiente para stack react web
 types:
   - app
