@@ -1,1 +1,1 @@
-The plugin `web-react-deploy-plugin` adds to a stack the capability to create AWS resourses and deploy the application in the AWS environment created.
+O plugin **web-react-deploy** adiciona a uma aplicação criada pela stack **matter-web-react** a capacidade de criar recursos em uma conta da AWS e de fazer o deploy da aplicação nesses recursos criados.

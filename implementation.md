@@ -1,11 +1,11 @@
-After applying the plugin, create the resources in your aws environment with the command in the project folder
+Após aplicar o plugin, crie os recursos na sua conta AWS com o camando seguinte:
 
 ```bash
 stk deploy <stage>
 ```
 
-Commit and push your code.
+Faça o commit e dê o push do seu código.
 
-After merging the commited changes, generate a release in github with the format `<stage>-v0.0.0`.
+Após feito o merge das mudanças, gere um release no Github com o seguinte formato `<stage>-v0.0.0`.
 
-The release action is going to start in github and if no errors happens with the tests, build or quality with your code the release is going to be deployed in the created environment.
+A action de release começará no Github e se não houver nenhum erro com os testes, o build ou a qualidade do código, a release será implantada no ambiente criado anteriormente.
