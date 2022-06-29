@@ -1,1 +1,1 @@
-This plugin is to be used when it is necessary to create a cloud environment and pipeline to deploy a web application created with the `zup-web-react` stack.
+Este plugin deve ser utilizado quando for necessário criar de criar um ambiente cloud e uma pipeline para fazer deploy de uma aplicação web criada com a Stack **`matter-web-react`**.
