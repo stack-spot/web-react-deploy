@@ -1,6 +1,6 @@
 #### **Pré-requisitos**
 
-- Uma Aplicação criada com a stack **zup-web-react** e o parametro --stages. Se o parametro --stages não foi usado na criação da aplicação, é necessário criar um diretório com o nome stages no mesmo nível do app com um arquivo nomeado `<stage_name>.json` dentro dele. O arquivo tem qu ter o formato:
+- Uma Aplicação criada com a stack **matter-web-react** e o parametro --stages. Se o parametro --stages não foi usado na criação da aplicação, é necessário criar um diretório com o nome stages no mesmo nível do app com um arquivo nomeado `<stage_name>.json` dentro dele. O arquivo tem qu ter o formato:
 
   ```
   {

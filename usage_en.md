@@ -1,6 +1,6 @@
 #### **Prerequisites**
 
-- An application created with the stack zup-web-react and the --stages param. If the --stages params wasn't used to create the application, it is necessary to create a stages folder in the level of the app and a file named `<stage_name>.json` inside it with the following format:
+- An application created with the stack matter-web-react and the --stages param. If the --stages params wasn't used to create the application, it is necessary to create a stages folder in the level of the app and a file named `<stage_name>.json` inside it with the following format:
 
   ```
   {

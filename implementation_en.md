@@ -1,7 +1,7 @@
 After applying the plugin, create the resources in your aws environment with the command in the project folder
 
 ```bash
-stk deploy <stage>
+stk run deploy-env <stage>
 ```
 
 Commit and push your code.

@@ -1,7 +1,7 @@
 Após aplicar o plugin, crie os recursos na sua conta AWS com o camando seguinte:
 
 ```bash
-stk deploy <stage>
+stk run deploy-env <stage>
 ```
 
 Faça o commit e dê o push do seu código.

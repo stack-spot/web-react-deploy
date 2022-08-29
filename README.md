@@ -1,7 +1,7 @@
 - **Description:** The plugin `web-react-deploy` adds to a stack the capability to create AWS resourses and deploy the application in the AWS environment created.
 
 - **Category:** Resources
-- **Stack:** zup-web-react
+- **Stack:** matter-web-react
 - **Created:** 23/03/2022
 - **Last update:** 23/03/2022
 - **Download:** https://github.com/stack-spot/web-react-deploy.git
@@ -10,7 +10,7 @@
 
 ### **web-react-deploy**
 
-The **web-react-deploy** is a plugin for the [zup-web-react](https://github.com/stack-spot/zup-web-react) stack that adds the code needed to crate AWS resources that are necessary to deploy the application to your AWS environment. It also adds to you project the github action files needed for running tests, building and deploying the application in this environment.
+The **web-react-deploy** is a plugin for the [matter-web-react](https://github.com/stack-spot/zup-web-react) stack that adds the code needed to crate AWS resources that are necessary to deploy the application to your AWS environment. It also adds to you project the github action files needed for running tests, building and deploying the application in this environment.
 
 ## **Usage**
 
@@ -49,7 +49,7 @@ stk apply plugin web-react-deploy
 Create the resources in your aws environment
 
 ```bash
-stk deploy <stage>
+stk run deploy-env <stage>
 ```
 
 Commit and push your code.
